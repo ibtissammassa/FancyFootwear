@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { products } from '@/fake-data';
+import axios from 'axios'
 import ProductGrid from '@/components/ProductGrid.vue';
 
 export default {
@@ -11,8 +11,13 @@ export default {
     components: {ProductGrid},
     data(){
       return {
-        products
+        products: [],
       }
+    },
+    async created() {
+      const result = await axios.get('/api/products');
+      const products = result.data;
+      this.products = products;
     }
 }
 </script>

@@ -19,7 +19,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     gap: 2%;
-    margin: 10%;
-    margin-top: 3%;
+    margin: 25%;
+    margin-top: 2%;
   }
 </style>
