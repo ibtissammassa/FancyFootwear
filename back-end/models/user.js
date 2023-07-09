@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
-const User = mongoose.model('User',new mongoose.Schema({
+const User = mongoose.model('user',new mongoose.Schema({
     id: Number,
     name: String,
-    cartItems: Array
+    cartItems: {
+        type:[Number],
+        default:[]
+    }
 }));
 
 exports.User = User;

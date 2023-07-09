@@ -5,30 +5,36 @@ const {User} = require('../models/user');
 const {Product} = require('../models/product');
 
 //GET
-router.get('/',async(req,res)=>{
-    const userId = req.params;
-    const user = await User.find({id:userId});
+router.get('/:userId/cart',async(req,res)=>{
+    const user = await User.findOne({id:req.params.userId});
     if(!user)return res.status(404).send('User not found');
-    const products = await Product.find({}).toArray();
+    const products = await Product.find();
     const cartItemIds = user.cartItems;
-    const cartItems = cartItemIds.map(id =>
-    products.find(product => product.id === id));
+    const cartItems = cartItemIds.map(id => products.find(product => product.id === id));
     res.send(cartItems);
 });
 
-//create
-router.post('/',async(req,res)=>{
-    let product = new Product({
-        id: req.body.id,
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description,
-        imageUrl: req.body.imageUrl,
-        averageRating: req.body.averageRating,
-    });
-    product = await product.save();
-    res.send(product);
+//add
+router.post('/:userId/cart',async(req,res)=>{ 
+    const { productId } = req.body;
+    let user = await User.updateOne({ id:req.params.userId }, {
+        $addToSet: { cartItems: productId },
+      });
+    if(!user)return res.status(404).send('User not found');
+    res.send(user.cartItems);
 });
 
+//delete
+router.delete('/:userId/cart/:productId',async(req,res)=>{
+    let user = await User.updateOne({ id:req.params.userId }, {
+        $pull: { cartItems: req.params.productId },
+      },{new:true});
+    if(!user)return res.status(404).send('User not found');
+    user = await User.findOne({id:req.params.userId});
+    const products = await Product.find();
+    const cartItemIds = user.cartItems;
+    const cartItems = cartItemIds?.map(id => products.find(product => product.id === id));
+    res.send(cartItems);
+});
 
 module.exports = router;

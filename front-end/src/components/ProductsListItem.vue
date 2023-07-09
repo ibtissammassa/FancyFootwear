@@ -7,14 +7,14 @@
                 <p>${{ product.price }}</p>
             </div>
         </div>
-        <button class="remove">Remove From Cart</button>
+        <button @click="$emit('remove',product.id)" class="remove">Remove From Cart</button>
     </div>
 </template>
 
 <script>
 export default {
     name:'ProductsListItem',
-    props:['product']
+    props:['product'],
 }
 </script>
 

@@ -8,7 +8,8 @@
                     <h2>${{ product.price }}</h2>
                 </div>
                 <p>Average rating: {{ product.averageRating }}</p>
-                <button>Add to Cart</button>
+                <button @click="AddToCart" v-if="!SuccessMessage">Add to Cart</button>
+                <button class="addedtoCart" v-if="SuccessMessage">Added Successfully!</button>
                 <span>Description</span>
                 <p>{{ product.description }}</p>
             </div>
@@ -27,6 +28,18 @@ export default {
     data(){
         return{
             product: {},
+            SuccessMessage: false
+        }
+    },
+    methods: {
+        async AddToCart(){
+            const result = await axios.post(`/api/users/1/cart`,{
+          productId: this.$route.params.id,
+        });
+        this.SuccessMessage = true;
+        setTimeout(() => {
+            this.$router.push('/products');
+        }, 1200);
         }
     },
     async created(){
@@ -71,5 +84,8 @@ export default {
     }
     h1,h2{
         margin: 0%;
+    }
+    .addedtoCart{
+        background-color: green;
     }
 </style>

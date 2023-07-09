@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost/FancyFootwear')
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, '/assets')));
 app.use('/api/products',products);
-app.use('/api/users/:userId/cart',cart);
+app.use('/api/users',cart);
 
 //listen for requests
 const port = process.env.PORT || 8000;
