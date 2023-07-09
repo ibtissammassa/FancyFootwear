@@ -8,8 +8,9 @@
                     <h2>${{ product.price }}</h2>
                 </div>
                 <p>Average rating: {{ product.averageRating }}</p>
-                <button @click="AddToCart" v-if="!SuccessMessage">Add to Cart</button>
+                <button @click="AddToCart" v-if="!SuccessMessage && !alreadyInCart">Add to Cart</button>
                 <button class="addedtoCart" v-if="SuccessMessage">Added Successfully!</button>
+                <button class="alreadyInCart" v-if="alreadyInCart">Already in Cart !</button>
                 <span>Description</span>
                 <p>{{ product.description }}</p>
             </div>
@@ -28,6 +29,7 @@ export default {
     data(){
         return{
             product: {},
+            cartItems:[],
             SuccessMessage: false
         }
     },
@@ -42,10 +44,18 @@ export default {
         }, 1200);
         }
     },
+    computed:{
+        alreadyInCart(){
+            return this.cartItems.some(item => item.id === this.product.id)
+        }
+    },
     async created(){
-        const result = await axios.get(`/api/products/${this.$route.params.id}`);
-        const product = result.data;
+        const resultproduct = await axios.get(`/api/products/${this.$route.params.id}`);
+        const product = resultproduct.data;
         this.product = product;
+
+        const resultcart = await axios.get(`/api/users/1/cart`);
+        this.cartItems = resultcart.data;
     }
 }
 </script>
@@ -87,5 +97,9 @@ export default {
     }
     .addedtoCart{
         background-color: green;
+    }
+    .alreadyInCart{
+        background-color: #888;
+        cursor: auto;
     }
 </style>
